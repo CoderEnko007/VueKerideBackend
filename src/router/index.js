@@ -26,17 +26,26 @@ export const constantRouterMap = [
   { path: '/404', component: () => import('@/views/404'), hidden: true },
 
   {
-    path: '/',
+    path: '',
     component: Layout,
     redirect: '/dashboard',
-    name: 'Dashboard',
-    hidden: true,
     children: [{
       path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      component: () => import('@/views/dashboard/index'),
+      name: 'dashboard',
+      meta: { title: '首页', icon: 'home', noCache: true }
     }]
   },
-
+  {
+    path: '/intro',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'introduction',
+      component: () => import('@/views/introduction/index'),
+      meta: { title: '公司简介', icon: 'introduce' }
+    }]
+  },
   {
     path: '/example',
     component: Layout,

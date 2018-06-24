@@ -1,5 +1,5 @@
-import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
+import axios from 'axios'
 import store from '../store'
 import { getToken } from '@/utils/auth'
 
@@ -28,7 +28,7 @@ service.interceptors.response.use(
   * code为非20000是抛错 可结合自己业务进行修改
   */
     const res = response.data
-    if (res.code !== 1) {
+    if (res.code < 0) {
       Message({
         message: res.message,
         type: 'error',
