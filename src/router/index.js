@@ -26,7 +26,7 @@ export const constantRouterMap = [
   { path: '/404', component: () => import('@/views/404'), hidden: true },
 
   {
-    path: '',
+    path: '/',
     component: Layout,
     redirect: '/dashboard',
     children: [{
@@ -44,6 +44,66 @@ export const constantRouterMap = [
       name: 'introduction',
       component: () => import('@/views/introduction/index'),
       meta: { title: '公司简介', icon: 'introduce' }
+    }]
+  },
+  {
+    path: '/category',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'category',
+      component: () => import('@/views/category/index'),
+      meta: { title: '产品分类', icon: 'introduce' }
+    }]
+  },
+  {
+    path: '/products',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'products',
+      component: () => import('@/views/products/index'),
+      meta: { title: '产品详情', icon: 'introduce' }
+    }]
+  },
+  {
+    path: '/banner',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'banner',
+      component: () => import('@/views/banner/index'),
+      meta: { title: '首页轮播图', icon: 'introduce' }
+    }]
+  },
+  {
+    path: '/news',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'news',
+      component: () => import('@/views/news/index'),
+      meta: { title: '新闻中心', icon: 'introduce' }
+    }]
+  },
+  {
+    path: '/partner',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'partner',
+      component: () => import('@/views/partner/index'),
+      meta: { title: '合作伙伴', icon: 'introduce' }
+    }]
+  },
+  {
+    path: '/contacts',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'contacts',
+      component: () => import('@/views/contacts/index'),
+      meta: { title: '联系方式', icon: 'introduce' }
     }]
   },
   {

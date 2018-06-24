@@ -9,3 +9,15 @@ export default {
   name: 'App'
 }
 </script>
+<style>
+.clearfix:after{
+  content:".";
+  display:block;
+  height:0;
+  clear:both;
+  visibility:hidden;
+}
+.info {
+  color: #303133;
+}
+</style>
