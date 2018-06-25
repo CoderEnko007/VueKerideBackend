@@ -11,8 +11,8 @@ export const getIntro = () => { return request.get(`/intro`) }
 export const updateIntro = params => { return request.patch(`/intro`, params) }
 
 export const getCategory = () => { return request.get(`/categories`) }
-export const addCategory = params => { return request.post(`/categories`, params) }
-export const patchCategory = params => { return request.patch(`/categories`, params) }
+export const createCategory = params => { return request.post(`/categories`, params) }
+export const updateCategory = params => { return request.patch(`/categories`, params) }
 export const deleteCategory = id => { return request.delete(`/categories/${id}`) }
 
 // export const getProducts = params => { return request.get(`${host}${prefix}/products`, params) };
