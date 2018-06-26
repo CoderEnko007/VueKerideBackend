@@ -83,11 +83,11 @@ export default {
       getCategory().then(res => {
         this.list = res.data.list
         this.listLoading = false
-        console.log(this.list)
+      }).catch(err => {
+        this.listLoading = false
       })
     },
     handleUpdate(row) {
-      this.listLoading = true
       this.data = Object.assign({}, row)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
@@ -109,7 +109,6 @@ export default {
     },
     handleCreate(row) {
       this.resetData()
-      this.listLoading = true
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -119,6 +118,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.listLoading = true
           createCategory({
             name: this.data.name,
             desc: this.data.desc
@@ -130,6 +130,14 @@ export default {
               title: '成功',
               message: '创建成功',
               type: 'success',
+              duration: 2000
+            })
+          }).catch(err => {
+            this.listLoading = false
+            this.$notify({
+              title: '失败',
+              message: '创建失败',
+              type: 'warning',
               duration: 2000
             })
           })
@@ -167,7 +175,6 @@ export default {
   },
   mounted() {
     this.getCategoriesList()
-    console.log(this.$route.meta.title)
   }
 }
 </script>
@@ -185,6 +192,11 @@ export default {
       top: 50%;
       transform: translateY(-50%);
     }
+  }
+  .cell span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

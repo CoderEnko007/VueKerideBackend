@@ -1,8 +1,9 @@
 <template>
 <div class="intro-container">
-  <Sticky :className="'sub-navbar '+postForm.status">
+  <sticky :className="'sub-navbar '+postForm.status">
+    <span style="float: left; margin-left: 20px" class="info"><i class="el-icon-menu"></i>  {{$route.meta.title}}</span>
     <el-button class="el-button--primary" @click="submitForm" v-loading="loading">保 存</el-button>
-  </Sticky>
+  </sticky>
   <el-form class="editor-content" :model="postForm" :rules="rules" ref="postForm">
     <el-form-item class="uploader clearfix" prop="imageUrl">
       <el-upload
@@ -45,7 +46,6 @@ export default {
   components: { Tinymce, Sticky },
   data() {
     const validateRequire = (rule, value, callback) => {
-      console.log('validateRequire',value)
       if (value === '') {
         this.$message({
           message: rule.field + '为必传项',

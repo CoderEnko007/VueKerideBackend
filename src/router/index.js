@@ -59,12 +59,14 @@ export const constantRouterMap = [
   {
     path: '/products',
     component: Layout,
-    children: [{
-      path: 'index',
-      name: 'products',
-      component: () => import('@/views/products/index'),
-      meta: { title: '产品详情', icon: 'introduce' }
-    }]
+    redirect: '/products/list',
+    name: 'products',
+    meta: { title: '产品信息', icon: 'introduce' },
+    children: [
+      { path: 'list', name: 'productsList', component: () => import('@/views/products/list'), meta: { title: '产品列表', icon: 'introduce' }},
+      { path: 'create', name: 'createProduct', component: () => import('@/views/products/create'), meta: { title: '新增产品', icon: 'introduce' } },
+      { path: 'edit/:id', name: 'editProduct', component: () => import('@/views/products/edit'), meta: { title: '编辑信息', icon: 'introduce' }, hidden: true }
+    ]
   },
   {
     path: '/banner',

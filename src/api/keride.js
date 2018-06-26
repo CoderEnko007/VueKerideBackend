@@ -15,9 +15,12 @@ export const createCategory = params => { return request.post(`/categories`, par
 export const updateCategory = params => { return request.patch(`/categories`, params) }
 export const deleteCategory = id => { return request.delete(`/categories/${id}`) }
 
-// export const getProducts = params => { return request.get(`${host}${prefix}/products`, params) };
+export const getProducts = params => { return request.get(`/products`, {params: params}) }
+export const createProduct = params => { return request.post(`/products`, params) }
+export const updateProduct = params => { return request.patch(`/products`, params)}
 // // export const getProductDetail = id => { return request.get(`${host}${prefix}/products?id=${id}`) };
-// export const getProductDetail = id => { return request.get(`${host}${prefix}/products/${id}`) };
+export const getProductDetail = id => { return request.get(`/products/${id}`) };
+export const deleteProduct = id => { return request.delete(`/products/${id}`) }
 // export const getNews = params => { return request.get(`${host}${prefix}/news`, params)};
 // // export const getNewsDetail = id => { return request.get(`${host}${prefix}/news?id=${id}`)};
 // export const getNewsDetail = id => { return request.get(`${host}${prefix}/news/${id}`)};

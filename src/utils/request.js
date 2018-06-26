@@ -29,9 +29,9 @@ service.interceptors.response.use(
   */
     const res = response.data
     console.log('request', res)
-    if (res.code < 0) {
+    if (res.code !== 0 && res.code !== 1) {
       Message({
-        message: res.message,
+        message: res.data.error,
         type: 'error',
         duration: 5 * 1000
       })

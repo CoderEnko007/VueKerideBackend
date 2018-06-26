@@ -19,5 +19,6 @@ export default {
 }
 .info {
   color: #303133;
+  font-size: 22px;
 }
 </style>
