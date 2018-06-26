@@ -21,6 +21,11 @@ export const updateProduct = params => { return request.patch(`/products`, param
 // // export const getProductDetail = id => { return request.get(`${host}${prefix}/products?id=${id}`) };
 export const getProductDetail = id => { return request.get(`/products/${id}`) };
 export const deleteProduct = id => { return request.delete(`/products/${id}`) }
+
+export const getBanners = () => { return request.get(`/banner`) };
+export const addBanner = params => { return request.post(`/banner`, params)}
+export const updateBanner = params => { return request.patch(`/banner`, params)}
+export const deleteBanner = id => { return request.delete(`/banner/${id}`) }
 // export const getNews = params => { return request.get(`${host}${prefix}/news`, params)};
 // // export const getNewsDetail = id => { return request.get(`${host}${prefix}/news?id=${id}`)};
 // export const getNewsDetail = id => { return request.get(`${host}${prefix}/news/${id}`)};

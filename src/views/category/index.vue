@@ -46,7 +46,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确认</el-button>
+        <el-button v-if="dialogStatus==='create'" type="primary" @click="createData">确认</el-button>
         <el-button v-else type="primary" @click="updateData">确认</el-button>
       </div>
     </el-dialog>
@@ -147,6 +147,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.listLoading = true
           updateCategory({
             id: this.data.id,
             name: this.data.name,
@@ -158,6 +159,14 @@ export default {
               title: '成功',
               message: '创建成功',
               type: 'success',
+              duration: 2000
+            })
+          }).catch(err => {
+            this.listLoading = false
+            this.$notify({
+              title: '失败',
+              message: '更新失败',
+              type: 'warning',
               duration: 2000
             })
           })

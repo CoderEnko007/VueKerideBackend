@@ -26,7 +26,7 @@
       </el-table-column>
       <el-table-column width="200" align="center" label="产品名称" >
         <template slot-scope="scope">
-          <span>{{scope.row.name}}</span>
+          <span class="link-type" @click="handleUpdate(scope.row.id)">{{scope.row.name}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="产品类别" >
@@ -34,7 +34,7 @@
           <span>{{scope.row.category.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column min-width="300" align="center" label="产品描述" >
+      <el-table-column min-width="300" align="left" label="产品描述" >
         <template slot-scope="scope">
           <span>{{scope.row.desc}}</span>
         </template>
@@ -54,7 +54,7 @@
 
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page"
-                     :page-size="pageSize" layout="total, prev, pager, next, jumper" :total="total">
+                     :page-size="listQuery.pageSize" layout="total, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
   </div>
@@ -62,20 +62,21 @@
 <script>
 import { getCategory, getProducts, deleteProduct } from "../../api/keride";
 
+const defaultList = {
+  page: 1,
+  pageSize: 10,
+  name: undefined,
+  category_id: undefined,
+  sort: 'asc'
+}
 export default {
   data() {
     return {
       productsList: null,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        name: undefined,
-        category_id: undefined,
-        sort: 'asc'
-      },
+      listQuery: Object.assign({}, defaultList),
       sortOptions: [{ label: '+创建时间', key: 'asc' }, { label: '-创建时间', key: 'desc' }],
       categoryOptions: [],
-      pageSize: 6,
       total: 0
     }
   },
@@ -111,12 +112,7 @@ export default {
       this.getProductsList()
     },
     handleReset() {
-      this.listQuery = {
-        page: 1,
-        name: undefined,
-        category_id: undefined,
-        sort: 'asc'
-      }
+      this.listQuery = Object.assign({}, defaultList)
       this.getProductsList()
     },
     handleSizeChange(val) {
@@ -134,7 +130,6 @@ export default {
       this.$router.push({ name: 'editProduct', params: {id: id}})
     },
     handleDelete(id) {
-
       deleteProduct(id).then(res => {
         this.$notify({
           title: '成功',

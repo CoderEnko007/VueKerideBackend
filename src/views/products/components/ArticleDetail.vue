@@ -180,6 +180,7 @@ export default {
     fetchData(id) {
       getProductDetail(id).then(res => {
         this.postForm = res.data
+        this.postForm.status = defaultForm.status
       })
     }
   },
