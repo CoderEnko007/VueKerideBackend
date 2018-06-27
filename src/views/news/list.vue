@@ -17,7 +17,7 @@
     <el-table :data="newsList" v-loading="listLoading" element-loading-text="加载中..." border fit highlight-current-row>
       <el-table-column width="65" align="center" label="序号" >
         <template slot-scope="scope">
-          <span>{{scope.$index+1}}</span>
+          <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="新闻标题" >
@@ -100,15 +100,26 @@ export default {
       this.$router.push({ name: 'editNews', params: {id: id}})
     },
     handleDelete(id) {
-      deleteNews(id).then(res => {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+      this.$confirm('是否确定删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteNews(id).then(res => {
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getNewsList()
         })
-        this.getNewsList()
-      })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     handleSizeChange(val) {
       console.log(val)

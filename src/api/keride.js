@@ -36,4 +36,9 @@ export const getPartner = params => { return request.get(`/partner`, {params: pa
 export const addPartner = params => { return request.post(`/partner`, params)};
 export const updatePartner = params => { return request.patch(`/partner`, params)}
 export const deletePartner = id => { return request.delete(`/partner/${id}`)};
-// export const getContacts = () => { return request.get(`${host}${prefix}/contacts`)};
+
+export const getContacts = () => { return request.get(`/contacts`)};
+export const addContacts = params => { return request.post(`/contacts`, params)};
+export const updateContacts = params => { return request.patch(`/contacts`, params)}
+export const deleteContacts = id => { return request.delete(`/contacts/${id}`)};
+

@@ -8,7 +8,7 @@
     <el-table :data="list" v-loading="listLoading" element-loading-text="加载中..." border fit highlight-current-row>
       <el-table-column width="65" align="center" label="序号" >
         <template slot-scope="scope">
-          <span>{{scope.$index+1}}</span>
+          <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="类别名称">
@@ -96,16 +96,27 @@ export default {
       })
     },
     handleDelete(row) {
-      this.listLoading = true
-      deleteCategory(row.id).then(res => {
-        this.getCategoriesList()
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+      this.$confirm('是否确定删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.listLoading = true
+        deleteCategory(row.id).then(res => {
+          this.getCategoriesList()
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
         })
-      })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     handleCreate(row) {
       this.resetData()
@@ -157,7 +168,7 @@ export default {
             this.dialogFormVisible = false
             this.$notify({
               title: '成功',
-              message: '创建成功',
+              message: '更新成功',
               type: 'success',
               duration: 2000
             })

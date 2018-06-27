@@ -138,16 +138,27 @@ export default {
       })
     },
     handleDelete(row) {
-      this.listLoading = true
-      deletePartner(row.id).then(res => {
-        this.getPartnerList()
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+      this.$confirm('是否确定删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.listLoading = true
+        deletePartner(row.id).then(res => {
+          this.getPartnerList()
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
         })
-      })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
 
     beforeUpload (file) {
