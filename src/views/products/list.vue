@@ -21,7 +21,7 @@
     <el-table :data="productsList" v-loading="listLoading" element-loading-text="加载中..." border fit highlight-current-row>
       <el-table-column width="65" align="center" label="序号" >
         <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
+          <span>{{scope.$index+1}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="产品名称" >
@@ -101,7 +101,10 @@ export default {
         this.total = res.data.count
         for (let index in this.productsList) {
           if (this.productsList.hasOwnProperty(index)) {
-            this.productsList[index].desc = this.productsList[index].desc.replace(/<[^>]*>|/g,"");
+            let desc = this.productsList[index].desc.replace(/<[^>]*>|/g,""); //去除HTML tag
+            desc = desc.replace(/[ | ]*\n/g,'\n'); //去除行尾空白
+            desc = desc.replace(/&nbsp;/ig,'');//去掉&nbsp;
+            this.productsList[index].desc = desc.replace(/\s/g,''); //将空格去掉
           }
         }
         this.listLoading = false
@@ -116,8 +119,7 @@ export default {
       this.getProductsList()
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val
-      this.getList()
+      console.log(val)
     },
     handleCurrentChange(val) {
       this.listQuery.page = val

@@ -8,7 +8,7 @@
     <el-table :data="list" v-loading="listLoading" element-loading-text="加载中..." border fit highlight-current-row>
       <el-table-column width="65" align="center" label="序号" >
         <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
+          <span>{{scope.$index+1}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="对应产品" >

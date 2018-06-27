@@ -18,7 +18,6 @@ export const deleteCategory = id => { return request.delete(`/categories/${id}`)
 export const getProducts = params => { return request.get(`/products`, {params: params}) }
 export const createProduct = params => { return request.post(`/products`, params) }
 export const updateProduct = params => { return request.patch(`/products`, params)}
-// // export const getProductDetail = id => { return request.get(`${host}${prefix}/products?id=${id}`) };
 export const getProductDetail = id => { return request.get(`/products/${id}`) };
 export const deleteProduct = id => { return request.delete(`/products/${id}`) }
 
@@ -26,8 +25,15 @@ export const getBanners = () => { return request.get(`/banner`) };
 export const addBanner = params => { return request.post(`/banner`, params)}
 export const updateBanner = params => { return request.patch(`/banner`, params)}
 export const deleteBanner = id => { return request.delete(`/banner/${id}`) }
-// export const getNews = params => { return request.get(`${host}${prefix}/news`, params)};
-// // export const getNewsDetail = id => { return request.get(`${host}${prefix}/news?id=${id}`)};
-// export const getNewsDetail = id => { return request.get(`${host}${prefix}/news/${id}`)};
+
+export const getNews = params => { return request.get(`/news`, {params: params})};
+export const getNewsDetail = id => { return request.get(`/news/${id}`) };
+export const addNews = params => { return request.post(`/news`, params)}
+export const updateNews = params => { return request.patch(`/news`, params)}
+export const deleteNews = id => { return request.delete(`/news/${id}`) }
+
+export const getPartner = params => { return request.get(`/partner`, {params: params})};
+export const addPartner = params => { return request.post(`/partner`, params)};
+export const updatePartner = params => { return request.patch(`/partner`, params)}
+export const deletePartner = id => { return request.delete(`/partner/${id}`)};
 // export const getContacts = () => { return request.get(`${host}${prefix}/contacts`)};
-// export const getPartner = () => { return request.get(`${host}${prefix}/partner`)};

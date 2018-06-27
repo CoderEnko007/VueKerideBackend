@@ -184,7 +184,8 @@ export default {
       })
     }
   },
-  created() {
+  mounted() {
+    console.log('aaa',this.isEdit)
     this.getCategoriesList()
     if (this.isEdit) {
       const id = this.$route.params && this.$route.params.id

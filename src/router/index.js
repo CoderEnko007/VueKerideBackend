@@ -26,9 +26,9 @@ export const constantRouterMap = [
   { path: '/404', component: () => import('@/views/404'), hidden: true },
 
   {
-    path: '/',
+    path: '',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: 'dashboard',
     children: [{
       path: 'dashboard',
       component: () => import('@/views/dashboard/index'),
@@ -81,12 +81,14 @@ export const constantRouterMap = [
   {
     path: '/news',
     component: Layout,
-    children: [{
-      path: 'index',
-      name: 'news',
-      component: () => import('@/views/news/index'),
-      meta: { title: '新闻中心', icon: 'introduce' }
-    }]
+    redirect: '/news/list',
+    name: 'news',
+    meta: { title: '新闻动态', icon: 'introduce'},
+    children: [
+      { path: 'list', name: 'newsList', component: () => import('@/views/news/list'), meta: { title: '新闻列表', icon: 'introduce' }},
+      { path: 'create', name: 'addNews', component: () => import('@/views/news/create'), meta: { title: '添加新闻', icon: 'introduce' } },
+      { path: 'edit/:id', name: 'editNews', component: () => import('@/views/news/edit'), meta: { title: '编辑新闻', icon: 'introduce' }, hidden: true }
+    ]
   },
   {
     path: '/partner',
