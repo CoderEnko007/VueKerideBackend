@@ -56,3 +56,13 @@ export function formatTime(time, option) {
     return d.getMonth() + 1 + '月' + d.getDate() + '日' + d.getHours() + '时' + d.getMinutes() + '分'
   }
 }
+
+export function isValidPost( chars ) {
+  let re=/^\d{6}$/;
+  return chars.match(re) != null;
+}
+
+export function isEmail(str){
+  let re=/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+  return re.test(str) === true;
+}

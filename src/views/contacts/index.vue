@@ -46,26 +46,26 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="纬度" prop="latitude">
-              <el-input v-model.number="postForm.latitude" style="width: 200px;"></el-input>
+              <el-input v-model="postForm.latitude" style="width: 200px;"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="经度" prop="longitude">
-              <el-input v-model.number="postForm.longitude" style="width: 200px;"></el-input>
+              <el-input v-model="postForm.longitude" style="width: 200px;"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="联系电话" prop="phone" :rules="[{ type: 'number', message: '格式错误'}]">
-          <el-input type="phone" v-model.number="postForm.phone"></el-input>
+          <el-input v-model.number="postForm.phone"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" prop="phone">
+        <el-form-item label="邮箱" prop="email">
           <el-input v-model="postForm.email"></el-input>
         </el-form-item>
         <el-form-item label="传真" prop="fax" :rules="[{ type: 'number', message: '格式错误'}]">
-          <el-input type="fax" v-model.number="postForm.fax"></el-input>
+          <el-input v-model.number="postForm.fax"></el-input>
         </el-form-item>
-        <el-form-item label="邮政编码" prop="zipcode" :rules="[{ type: 'number', message: '格式错误'}]">
-          <el-input type="zipcode" v-model.number="postForm.zipcode"></el-input>
+        <el-form-item label="邮政编码" prop="zipcode">
+          <el-input v-model="postForm.zipcode"></el-input>
         </el-form-item>
         <p><em><a href="http://api.map.baidu.com/lbsapi/getpoint/index.html">（注：经纬度请点击这里查看）</a></em></p>
       </el-form>
@@ -78,6 +78,7 @@
   </div>
 </template>
 <script>
+import {isEmail, isValidPost} from "../../utils";
 import {getContacts, addContacts, updateContacts, deleteContacts} from "../../api/keride";
 
 const defaultData = {
@@ -95,30 +96,35 @@ export default {
   data() {
     const validateLatitude = (rule, value, callback) => {
       // 纬度范围-90~90，经度范围-180~180
-      console.log(value>0, value)
-      if (!Number.isInteger(value)) {
-        callback(new Error('请输入数字值'));
+      if (value && value>=-90 && value<=90) {
+        callback()
       } else {
-        if (value > 90 || value < -90) {
-          callback(new Error('纬度范围-90~90'));
-        } else {
-          callback();
-        }
+        callback(new Error('请输入-90~90的数字'));
       }
     };
     const validateLongitude = (rule, value, callback) => {
       // 纬度范围-90~90，经度范围-180~180
-      console.log(value>0, value)
-      if (!Number.isInteger(value)) {
-        callback(new Error('请输入数字值'));
+      if (value && value>=-180 && value<=180) {
+        callback()
       } else {
-        if (value > 180 || value < -180) {
-          callback(new Error('经度范围-180~180'));
-        } else {
-          callback();
-        }
+        callback(new Error('请输入-180~180的数字'));
       }
     };
+    const validateEmail = (rule, value, callback) => {
+      if (value && !isEmail(value)) {
+        callback(new Error('邮箱格式不正确'));
+      } else {
+        callback();
+      }
+    };
+    const validateZipcode = (rule, value, callback) => {
+      console.log(value)
+      if (value && !isValidPost(value)) {
+        callback(new Error('邮编格式不正确'));
+      } else {
+        callback();
+      }
+    }
     return {
       contactList: null,
       listLoading: false,
@@ -134,6 +140,8 @@ export default {
         latitude: [{ required: true, message: '该字段不能为空' }, { validator: validateLatitude, trigger: 'blur' }],
         longitude: [{ required: true, message: '该字段不能为空' }, { validator: validateLongitude, trigger: 'blur' }],
         address: [{ required: true, message: '请填写详细地址', trigger: 'blur' }],
+        email: [{ validator: validateEmail }],
+        zipcode: [{ validator: validateZipcode }],
       },
     }
   },
