@@ -49,6 +49,7 @@ import Sticky from '@/components/Sticky'
 import MDinput from '@/components/MDinput'
 import { config, getToken, upload } from '@/api/qiniu'
 import { addNews, updateNews, getNewsDetail } from "../../../api/keride";
+import {resizeImage} from "../../../utils";
 
 const defaultForm = {
   status: 'draft',
@@ -126,15 +127,15 @@ export default {
     },
 
     beforeUpload (file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-      const isLt1M = file.size / 1024 / 1024 < 1
-      if (!isJPG) {
-        this.$message.error('上传图片只能是 JPG/PNG 格式!')
-      }
-      if (!isLt1M) {
-        this.$message.error('上传图片大小不能超过 1MB!')
-      }
-      return isJPG && isLt1M
+      // const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      // const isLt1M = file.size / 1024 / 1024 < 1
+      // if (!isJPG) {
+      //   this.$message.error('上传图片只能是 JPG/PNG 格式!')
+      // }
+      // if (!isLt1M) {
+      //   this.$message.error('上传图片大小不能超过 1MB!')
+      // }
+      // return isJPG && isLt1M
     },
     uploadImage(req) {
       const token = this.$store.getters.token
@@ -142,17 +143,26 @@ export default {
       const keyName = Date.now() + '.' + fileType
       this.imageLoading = true
 
-      getToken(token).then(response => {
-        const formData = new FormData()
-        formData.append('token', response.data.token)
-        formData.append('key', keyName)
-        formData.append('file', req.file)
-        upload(formData).then((res) => {
-          this.postForm.image = 'http://' + config.qiniuaddr + '/' + res.data.key
+      resizeImage(req.file, {width:480, quality:0.7, filename:keyName}).then(res => {
+        console.log('压缩后大小', ((res.file.size / 1024 / 1024) * 100).toFixed(2) + 'kb')
+        getToken(token).then(response => {
+          const formData = new FormData()
+          formData.append('token', response.data.token)
+          formData.append('key', keyName)
+          formData.append('file', req.file)
+          upload(formData).then((res) => {
+            this.postForm.image = 'http://' + config.qiniuaddr + '/' + res.data.key
+            this.imageLoading = false
+          })
+        }).catch(err => {
           this.imageLoading = false
         })
       }).catch(err => {
-        this.imageLoading = false
+        console.log(err)
+        this.$message({
+          message:'图片压缩失败',
+          type: 'error'
+        })
       })
     }
   },

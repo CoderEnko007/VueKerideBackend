@@ -53,7 +53,7 @@ export const constantRouterMap = [
       path: 'index',
       name: 'category',
       component: () => import('@/views/category/index'),
-      meta: { title: '产品分类', icon: 'introduce' }
+      meta: { title: '产品分类', icon: 'tree' }
     }]
   },
   {
@@ -61,11 +61,11 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/products/list',
     name: 'products',
-    meta: { title: '产品信息', icon: 'introduce' },
+    meta: { title: '产品信息', icon: 'products' },
     children: [
-      { path: 'list', name: 'productsList', component: () => import('@/views/products/list'), meta: { title: '产品列表', icon: 'introduce' }},
-      { path: 'create', name: 'createProduct', component: () => import('@/views/products/create'), meta: { title: '新增产品', icon: 'introduce' } },
-      { path: 'edit/:id', name: 'editProduct', component: () => import('@/views/products/edit'), meta: { title: '编辑信息', icon: 'introduce' }, hidden: true }
+      { path: 'list', name: 'productsList', component: () => import('@/views/products/list'), meta: { title: '产品列表', icon: 'list' }},
+      { path: 'create', name: 'createProduct', component: () => import('@/views/products/create'), meta: { title: '新增产品', icon: 'create' } },
+      { path: 'edit/:id', name: 'editProduct', component: () => import('@/views/products/edit'), meta: { title: '编辑信息', icon: 'create' }, hidden: true }
     ]
   },
   {
@@ -75,7 +75,7 @@ export const constantRouterMap = [
       path: 'index',
       name: 'banner',
       component: () => import('@/views/banner/index'),
-      meta: { title: '首页轮播图', icon: 'introduce' }
+      meta: { title: '首页轮播图', icon: 'swiper' }
     }]
   },
   {
@@ -83,11 +83,11 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/news/list',
     name: 'news',
-    meta: { title: '新闻动态', icon: 'introduce'},
+    meta: { title: '新闻动态', icon: 'news'},
     children: [
-      { path: 'list', name: 'newsList', component: () => import('@/views/news/list'), meta: { title: '新闻列表', icon: 'introduce' }},
-      { path: 'create', name: 'addNews', component: () => import('@/views/news/create'), meta: { title: '添加新闻', icon: 'introduce' } },
-      { path: 'edit/:id', name: 'editNews', component: () => import('@/views/news/edit'), meta: { title: '编辑新闻', icon: 'introduce' }, hidden: true }
+      { path: 'list', name: 'newsList', component: () => import('@/views/news/list'), meta: { title: '新闻列表', icon: 'list' }},
+      { path: 'create', name: 'addNews', component: () => import('@/views/news/create'), meta: { title: '添加新闻', icon: 'create' } },
+      { path: 'edit/:id', name: 'editNews', component: () => import('@/views/news/edit'), meta: { title: '编辑新闻', icon: 'create' }, hidden: true }
     ]
   },
   {
@@ -97,7 +97,7 @@ export const constantRouterMap = [
       path: 'index',
       name: 'partner',
       component: () => import('@/views/partner/index'),
-      meta: { title: '合作伙伴', icon: 'introduce' }
+      meta: { title: '合作伙伴', icon: 'partner' }
     }]
   },
   {
@@ -107,7 +107,7 @@ export const constantRouterMap = [
       path: 'index',
       name: 'contacts',
       component: () => import('@/views/contacts/index'),
-      meta: { title: '联系方式', icon: 'introduce' }
+      meta: { title: '联系方式', icon: 'contact' }
     }]
   },
 

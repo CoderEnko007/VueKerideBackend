@@ -1,6 +1,7 @@
 /**
  * Created by jiachenpan on 16/11/18.
  */
+import lrz from 'lrz'
 
 export function parseTime(time, cFormat) {
   if (arguments.length === 0) {
@@ -66,3 +67,21 @@ export function isEmail(str){
   let re=/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
   return re.test(str) === true;
 }
+
+export function resizeImage(file, opts) {
+  const config = {
+    width: null,
+    height: null,
+    quality: 0.7,
+    filename: 'file'
+  };
+  opts = opts || {};
+  for (let p in opts) {
+    if (!opts.hasOwnProperty(p)) continue;
+    config[p] = opts[p]
+  }
+  console.log('config', config)
+  return lrz(file, {width: config.width, height: config.height, quality: config.quality, filename: config.filename})
+}
+
+// export const resizeImage

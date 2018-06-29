@@ -31,7 +31,6 @@ const user = {
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(response => {
           const data = response.data
-          console.log(data.token)
           setToken(data.token)
           // commit 实际为this.$store.dispatch用来调用mutation
           commit('SET_TOKEN', data.token)

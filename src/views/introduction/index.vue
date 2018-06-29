@@ -34,6 +34,7 @@ import { getIntro, updateIntro } from '../../api/keride'
 import Tinymce from '@/components/Tinymce'
 import Sticky from '@/components/Sticky'
 import { config, getToken, upload } from '@/api/qiniu'
+import {resizeImage} from "../../utils";
 
 const defaultForm = {
   status: 'draft',
@@ -76,32 +77,47 @@ export default {
       })
     },
     beforeUpload (file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
+      // const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      // const isLt2M = file.size / 1024 / 1024 < 2
+      // const isLt500K = file.size / 1024 < 500
+      // if (!isJPG) {
+      //   this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+      // }
+      // if (!isLt500K) {
+      //   this.$message.error('上传头像图片大小不能超过 500kb!')
+      // }
+      // return isJPG && isLt500K
     },
     uploadImage(req) {
       const token = this.$store.getters.token
       let fileType = req.file.name.replace(/.+\./, "").toLowerCase();
       const keyName = Date.now() + '.' + fileType
 
-      getToken(token).then(response => {
-        const formData = new FormData()
-        formData.append('token', response.data.token)
-        formData.append('key', keyName)
-        formData.append('file', req.file)
-        upload(formData).then((res) => {
-          this.postForm.imageUrl = 'http://' + config.qiniuaddr + '/' + res.data.key
-          console.log(this.postForm.imageUrl)
+      resizeImage(req.file, {width:480, quality:0.7, filename:keyName}).then(res => {
+        console.log('压缩后大小', ((res.file.size/1024/1024)*100).toFixed(2)+'kb')
+        getToken(token).then(response => {
+          console.log(response)
+          const formData = new FormData()
+          formData.append('token', response.data.token)
+          formData.append('key', keyName)
+          formData.append('file', res.file)
+          upload(formData).then((res) => {
+            this.postForm.imageUrl = 'http://' + config.qiniuaddr + '/' + res.data.key
+            console.log(this.postForm.imageUrl)
+          }).catch(err => {
+            console.log(err)
+            this.$message({
+              message:'图片上传失败',
+              type: 'error'
+            })
+          })
         })
       }).catch(err => {
         console.log(err)
+        this.$message({
+          message:'图片压缩失败',
+          type: 'error'
+        })
       })
     },
     submitForm() {
