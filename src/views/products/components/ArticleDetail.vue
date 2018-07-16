@@ -118,7 +118,7 @@ export default {
           const formData = new FormData()
           formData.append('token', response.data.token)
           formData.append('key', keyName)
-          formData.append('file', req.file)
+          formData.append('file', res.file)
           upload(formData).then((res) => {
             this.postForm.image = 'http://' + config.qiniuaddr + '/' + res.data.key
             this.imageLoading = false
@@ -195,7 +195,6 @@ export default {
     }
   },
   mounted() {
-    console.log('aaa',this.isEdit)
     this.getCategoriesList()
     if (this.isEdit) {
       const id = this.$route.params && this.$route.params.id

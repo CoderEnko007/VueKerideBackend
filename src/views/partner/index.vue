@@ -71,6 +71,7 @@
 <script>
 import {getPartner, addPartner, deletePartner, updatePartner} from "../../api/keride";
 import { config, getToken, upload } from '@/api/qiniu'
+import {resizeImage} from "../../utils";
 
 const defaultData = {
   id: undefined,
@@ -104,7 +105,6 @@ export default {
     initListByPage(list) {
       let start = (this.currentPage-1)*this.pageSize
       let end = start + this.pageSize
-      console.log(start, end)
       return list.slice(start, end)
     },
     getPartnerList() {
@@ -162,35 +162,42 @@ export default {
     },
 
     beforeUpload (file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
+      // const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      // const isLt2M = file.size / 1024 / 1024 < 2
+      // if (!isJPG) {
+      //   this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
+      // }
+      // if (!isLt2M) {
+      //   this.$message.error('上传头像图片大小不能超过 2MB!')
+      // }
+      // return isJPG && isLt2M
     },
     uploadImage(req) {
       const token = this.$store.getters.token
-      const fileType = req.file.name.replace(/.+\./, "").toLowerCase();
+      let fileType = req.file.name.replace(/.+\./, "").toLowerCase();
       const keyName = Date.now() + '.' + fileType
       this.imageLoading = true
 
-      getToken(token).then(response => {
-        const formData = new FormData()
-        formData.append('token', response.data.token)
-        formData.append('key', keyName)
-        formData.append('file', req.file)
-        upload(formData).then((res) => {
-          this.postForm.image = 'http://' + config.qiniuaddr + '/' + res.data.key
+      resizeImage(req.file, {width:480, quality:0.7, filename:keyName}).then(res => {
+        console.log('压缩后大小', ((res.file.size / 1024 / 1024) * 100).toFixed(2) + 'kb')
+        getToken(token).then(response => {
+          const formData = new FormData()
+          formData.append('token', response.data.token)
+          formData.append('key', keyName)
+          formData.append('file', res.file)
+          upload(formData).then((res) => {
+            this.postForm.image = 'http://' + config.qiniuaddr + '/' + res.data.key
+            this.imageLoading = false
+          })
+        }).catch(err => {
           this.imageLoading = false
-          console.log(this.postForm.image)
         })
       }).catch(err => {
-        this.imageLoading = false
         console.log(err)
+        this.$message({
+          message:'图片压缩失败',
+          type: 'error'
+        })
       })
     },
 

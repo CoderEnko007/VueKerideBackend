@@ -96,14 +96,12 @@ export default {
       resizeImage(req.file, {width:480, quality:0.7, filename:keyName}).then(res => {
         console.log('压缩后大小', ((res.file.size/1024/1024)*100).toFixed(2)+'kb')
         getToken(token).then(response => {
-          console.log(response)
           const formData = new FormData()
           formData.append('token', response.data.token)
           formData.append('key', keyName)
           formData.append('file', res.file)
           upload(formData).then((res) => {
             this.postForm.imageUrl = 'http://' + config.qiniuaddr + '/' + res.data.key
-            console.log(this.postForm.imageUrl)
           }).catch(err => {
             console.log(err)
             this.$message({
@@ -121,16 +119,13 @@ export default {
       })
     },
     submitForm() {
-      console.log('submitForm')
       this.$refs.postForm.validate(valid => {
-        console.log('submitForm',valid)
         if (valid) {
           this.loading = true
           updateIntro({
             text: this.postForm.content,
             image: this.postForm.imageUrl
           }).then(res => {
-            console.log(res)
             this.$notify({
               title: '成功',
               message: '发布文章成功',

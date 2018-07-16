@@ -118,7 +118,6 @@ export default {
       }
     };
     const validateZipcode = (rule, value, callback) => {
-      console.log(value)
       if (value && !isValidPost(value)) {
         callback(new Error('邮编格式不正确'));
       } else {

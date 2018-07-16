@@ -148,11 +148,10 @@ export default {
           const formData = new FormData()
           formData.append('token', response.data.token)
           formData.append('key', keyName)
-          formData.append('file', req.file)
+          formData.append('file', res.file)
           upload(formData).then((res) => {
             this.postForm.image = 'http://' + config.qiniuaddr + '/' + res.data.key
             this.imageLoading = false
-            console.log(this.postForm.image)
           })
         }).catch(err => {
           this.imageLoading = false
@@ -171,7 +170,6 @@ export default {
       getBanners().then(res => {
         this.list = res.data
         this.listLoading = false
-        console.log(res.data)
       }).catch(err => {
         this.listLoading = false
       })
@@ -179,7 +177,6 @@ export default {
     getProductsList() {
       getProducts(this.queryForm).then(res => {
         this.productsList = res.data.list
-        console.log(this.productsList, this.productsList.length)
       })
     },
     resetForm() {

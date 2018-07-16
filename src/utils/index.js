@@ -80,7 +80,6 @@ export function resizeImage(file, opts) {
     if (!opts.hasOwnProperty(p)) continue;
     config[p] = opts[p]
   }
-  console.log('config', config)
   return lrz(file, {width: config.width, height: config.height, quality: config.quality, filename: config.filename})
 }
 
