@@ -57,6 +57,11 @@ export function formatTime(time, option) {
     return d.getMonth() + 1 + '月' + d.getDate() + '日' + d.getHours() + '时' + d.getMinutes() + '分'
   }
 }
+export function checkNumber(theObj) {
+  let reg = /^[0-9]+.?[0-9]*$/;
+  return reg.test(theObj);
+
+}
 
 export function isValidPost( chars ) {
   let re=/^\d{6}$/;

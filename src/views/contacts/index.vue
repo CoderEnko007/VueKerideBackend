@@ -6,11 +6,11 @@
     </div>
 
     <el-table :data="contactList" v-loading="listLoading" element-loading-text="加载中..." border fit highlight-current-row>
-      <el-table-column width="65" align="center" label="序号" >
-        <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
-      </el-table-column>
+      <!--<el-table-column width="65" align="center" label="序号" >-->
+        <!--<template slot-scope="scope">-->
+          <!--<span>{{scope.row.id}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column width="200" align="center" label="名称" >
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
@@ -55,14 +55,14 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="联系电话" prop="phone" :rules="[{ type: 'number', message: '格式错误'}]">
-          <el-input v-model.number="postForm.phone"></el-input>
+        <el-form-item label="联系电话" prop="phone">
+          <el-input v-model="postForm.phone"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="postForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="传真" prop="fax" :rules="[{ type: 'number', message: '格式错误'}]">
-          <el-input v-model.number="postForm.fax"></el-input>
+        <el-form-item label="传真" prop="fax">
+          <el-input v-model="postForm.fax"></el-input>
         </el-form-item>
         <el-form-item label="邮政编码" prop="zipcode">
           <el-input v-model="postForm.zipcode"></el-input>
@@ -78,7 +78,7 @@
   </div>
 </template>
 <script>
-import {isEmail, isValidPost} from "../../utils";
+import {isEmail, isValidPost, checkNumber} from "../../utils";
 import {getContacts, addContacts, updateContacts, deleteContacts} from "../../api/keride";
 
 const defaultData = {
@@ -118,8 +118,15 @@ export default {
       }
     };
     const validateZipcode = (rule, value, callback) => {
-      if (value && !isValidPost(value)) {
+      if (value && !isValidPost(String(value))) {
         callback(new Error('邮编格式不正确'));
+      } else {
+        callback();
+      }
+    };
+    const validateNumber = (rule, value, callback) => {
+      if (value && !checkNumber(String(value))) {
+        callback(new Error('格式不正确'));
       } else {
         callback();
       }
@@ -139,6 +146,8 @@ export default {
         latitude: [{ required: true, message: '该字段不能为空' }, { validator: validateLatitude, trigger: 'blur' }],
         longitude: [{ required: true, message: '该字段不能为空' }, { validator: validateLongitude, trigger: 'blur' }],
         address: [{ required: true, message: '请填写详细地址', trigger: 'blur' }],
+        phone: [{ validator: validateNumber }],
+        fax: [{ validator: validateNumber }],
         email: [{ validator: validateEmail }],
         zipcode: [{ validator: validateZipcode }],
       },
@@ -203,7 +212,7 @@ export default {
             this.listLoading = false
             this.$notify({
               title: '失败',
-              message: '更新失败',
+              message: '更新失败，请刷新后重试',
               type: 'warning',
               duration: 2000
             })
@@ -213,9 +222,6 @@ export default {
     },
     handleUpdate(row) {
       this.postForm = Object.assign({}, row)
-      this.postForm.phone = Number(this.postForm.phone)
-      this.postForm.fax = Number(this.postForm.fax)
-      this.postForm.zipcode = Number(this.postForm.zipcode)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -237,7 +243,12 @@ export default {
             type: 'success',
             duration: 2000
           })
-        })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '删除失败，请刷新后重试'
+          });
+        });
       }).catch(() => {
         this.$message({
           type: 'info',
