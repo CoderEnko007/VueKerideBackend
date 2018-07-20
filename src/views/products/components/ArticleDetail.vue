@@ -92,8 +92,8 @@ export default {
       postForm: Object.assign({}, defaultForm),
       domain: config.domain,
       rules: {
-        name: [{ validator: validateRequire }],
-        desc: [{ validator: validateRequire }]
+        name: [{ required: true, message: '该字段不能为空' }],
+        desc: [{ required: true, message: '该字段不能为空' }]
       },
       loading: false,
       imageLoading: false,
@@ -136,6 +136,7 @@ export default {
     },
     submitForm() {
       this.$refs.postForm.validate(valid => {
+        console.log(valid)
         if (valid) {
           this.loading = true
           if (this.isEdit) {

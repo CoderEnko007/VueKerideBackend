@@ -19,11 +19,11 @@
     </div>
 
     <el-table :data="productsList" v-loading="listLoading" element-loading-text="加载中..." border fit highlight-current-row>
-      <el-table-column width="65" align="center" label="序号" >
-        <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
-      </el-table-column>
+      <!--<el-table-column width="65" align="center" label="序号" >-->
+        <!--<template slot-scope="scope">-->
+          <!--<span>{{scope.row.id}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column width="200" align="center" label="产品名称" >
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(scope.row.id)">{{scope.row.name}}</span>

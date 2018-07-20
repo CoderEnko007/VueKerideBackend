@@ -53,7 +53,7 @@ export const constantRouterMap = [
       path: 'index',
       name: 'category',
       component: () => import('@/views/category/index'),
-      meta: { title: '产品分类', icon: 'tree' }
+      meta: { title: '应用领域', icon: 'tree' }
     }]
   },
   {

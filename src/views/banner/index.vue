@@ -6,11 +6,11 @@
     </div>
 
     <el-table :data="list" v-loading="listLoading" element-loading-text="加载中..." border fit highlight-current-row>
-      <el-table-column width="65" align="center" label="序号" >
-        <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
-      </el-table-column>
+      <!--<el-table-column width="65" align="center" label="序号" >-->
+        <!--<template slot-scope="scope">-->
+          <!--<span>{{scope.row.id}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column width="200" align="center" label="对应产品" >
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(scope.row)">{{scope.row.product.name}}</span>
@@ -36,8 +36,8 @@
     </el-table>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="postForm" label-position="left" label-width="70px" style='width: 800px; margin-left:50px;'>
-        <el-form-item label="轮播产品">
+      <el-form :rules="rules" ref="dataForm" :model="postForm" label-position="left" label-width="90px" style='width: 800px; margin-left:50px;'>
+        <el-form-item label="轮播产品" prop="product">
           <el-select v-model="postForm.product_id" filterable placeholder="请选择">
             <el-option
               v-for="item in productsList"
@@ -48,7 +48,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="轮播顺序" prop="index">
-          <el-input v-model.number="postForm.index" type="number" placeholder="数值越大显示越靠前（默认为0）"></el-input>
+          <el-input v-model.number="postForm.index" type="number" placeholder="数值越大显示越靠前（默认为1）"></el-input>
         </el-form-item>
         <el-form-item label="轮播图" class="uploader clearfix" prop="image">
           <el-upload
@@ -100,6 +100,20 @@ export default {
         callback();
       }
     };
+    const validateImage = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请添加图片'))
+      } else {
+        callback()
+      }
+    }
+    const validateProduct = (rule, value, callback) => {
+      if (!this.postForm.product_id) {
+        callback(new Error('请选择链接产品'))
+      } else {
+        callback()
+      }
+    }
     return {
       list: [],
       listLoading: true,
@@ -111,7 +125,7 @@ export default {
         id: undefined,
         product_id: undefined,
         image: '',
-        index: 0,
+        index: 1,
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -120,7 +134,9 @@ export default {
         create: '新建'
       },
       rules: {
-        index: [{ validator: validateNumber, trigger: 'blur' }]
+        index: [{ validator: validateNumber, trigger: 'blur' }],
+        image: [{ validator: validateImage }],
+        product: [{ validator: validateProduct }]
       },
     }
   },
@@ -184,7 +200,7 @@ export default {
         id: undefined,
         product_id: undefined,
         image: '',
-        index: 0,
+        index: 1,
       }
     },
     handleCreate() {

@@ -6,11 +6,11 @@
     </div>
 
     <el-table :data="list" v-loading="listLoading" element-loading-text="加载中..." border fit highlight-current-row>
-      <el-table-column width="65" align="center" label="序号" >
-        <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
-      </el-table-column>
+      <!--<el-table-column width="65" align="center" label="序号" >-->
+        <!--<template slot-scope="scope">-->
+          <!--<span>{{scope.row.id}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column width="200" align="center" label="类别名称">
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
@@ -110,6 +110,9 @@ export default {
             type: 'success',
             duration: 2000
           })
+        }).catch(err => {
+          this.listLoading = false
+          console.log(err)
         })
       }).catch(() => {
         this.$message({
@@ -118,7 +121,7 @@ export default {
         });
       });
     },
-    handleCreate(row) {
+    handleCreate() {
       this.resetData()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
