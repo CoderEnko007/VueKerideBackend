@@ -16,10 +16,12 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label-width="80px" label="产品分类:" class="postInfo-container-item">
-            <el-select clearable v-model="postForm.category_id" placeholder="产品类别">
-              <el-option v-for="item in categoryOptions" :key="item.id" :label="item.name" :value="item.id">
-              </el-option>
-            </el-select>
+            <!--<el-select clearable v-model="postForm.category_id" placeholder="产品类别">-->
+              <!--<el-option v-for="item in categoryOptions" :key="item.id" :label="item.name" :value="item.id">-->
+              <!--</el-option>-->
+            <!--</el-select>-->
+            <el-cascader filterable expand-trigger="hover" :options="categoryOptions" v-model="selectedOption" @change="handleFilter">
+            </el-cascader>
           </el-form-item>
         </el-col>
         <el-col :span="21">
@@ -97,13 +99,45 @@ export default {
       },
       loading: false,
       imageLoading: false,
-      categoryOptions: []
+      categoryOptions: [],
+      selectedOption: null
     }
   },
   methods: {
-    getCategoriesList() {
+    initList() {
+      // 获取分类信息，并初始化级联分类器
       getCategory().then(res => {
-        this.categoryOptions = res.data.list
+        // this.categoryOptions = res.data.list
+        let options = []
+        res.data.list.map(v => {
+          let temp = {}
+          if (v.category_type.id === 1) {
+            temp.value = v.id
+            temp.label = v.name
+            temp.children = []
+            options.push(temp)
+          }
+        })
+        res.data.list.map(v => {
+          let temp = {}
+          if (v.category_type.id === 2) {
+            temp.value = v.id
+            temp.label = v.name
+            for (let i in options) {
+              if (v.parent_category.id === options[i].value) {
+                options[i].children.push(temp)
+              }
+            }
+          }
+        })
+        this.categoryOptions = options
+        // 区分是编辑状态还是新建状态， 因为要用到分类信息，所以需要在分类数据获取完之后在执行下列操作
+        if (this.isEdit) {
+          const id = this.$route.params && this.$route.params.id
+          this.fetchData(id)
+        } else {
+          this.postForm = Object.assign({}, defaultForm)
+        }
       })
     },
     uploadImage(req) {
@@ -192,17 +226,24 @@ export default {
       getProductDetail(id).then(res => {
         this.postForm = res.data
         this.postForm.status = defaultForm.status
+        console.log('aaa', this.categoryOptions, res.data.category_id)
+        for (let i in this.categoryOptions) {
+          for (let j in this.categoryOptions[i].children) {
+            if (res.data.category_id === this.categoryOptions[i].children[j].value) {
+              this.selectedOption = [this.categoryOptions[i].value, this.categoryOptions[i].children[j].value]
+              console.log('bbb', this.selectedOption)
+            }
+          }
+        }
       })
+    },
+    handleFilter() {
+      this.postForm.category_id = this.selectedOption[1]
+      console.log(this.selectedOption)
     }
   },
   mounted() {
-    this.getCategoriesList()
-    if (this.isEdit) {
-      const id = this.$route.params && this.$route.params.id
-      this.fetchData(id)
-    } else {
-      this.postForm = Object.assign({}, defaultForm)
-    }
+    this.initList()
   }
 }
 </script>

@@ -10,7 +10,7 @@ import request from '@/utils/request'
 export const getIntro = () => { return request.get(`/intro`) }
 export const updateIntro = params => { return request.patch(`/intro`, params) }
 
-export const getCategory = () => { return request.get(`/categories`) }
+export const getCategory = (params) => { return request.get(`/categories`, {params: params}) }
 export const createCategory = params => { return request.post(`/categories`, params) }
 export const updateCategory = params => { return request.patch(`/categories`, params) }
 export const deleteCategory = id => { return request.delete(`/categories/${id}`) }

@@ -4,10 +4,12 @@
       <h2 style="float: left; margin-left: 20px" class="info"><i class="el-icon-menu"></i>  {{$route.meta.title}}</h2>
       <div class="filter">
         <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="产品名称" v-model="listQuery.name"/>
-        <el-select clearable style="width: 130px" v-model="listQuery.category_id" placeholder="产品类别">
-          <el-option v-for="item in  categoryOptions" :key="item.id" :label="item.name" :value="item.id">
-          </el-option>
-        </el-select>
+        <!--<el-select clearable style="width: 130px" v-model="listQuery.category_id" placeholder="产品类别">-->
+          <!--<el-option v-for="item in  categoryOptions" :key="item.id" :label="item.name" :value="item.id">-->
+          <!--</el-option>-->
+        <!--</el-select>-->
+        <el-cascader filterable expand-trigger="hover" :options="categoryOptions" v-model="selectedOption" @change="handleCategoryFilter">
+        </el-cascader>
         <el-select @change='handleFilter' style="width: 140px" v-model="listQuery.sort">
           <el-option v-for="(item, index) in sortOptions" :key="index" :label="item.label" :value="item.key">
           </el-option>
@@ -67,7 +69,7 @@ const defaultList = {
   pageSize: 10,
   name: undefined,
   category_id: undefined,
-  sort: 'asc'
+  sort: 'desc'
 }
 export default {
   data() {
@@ -77,17 +79,39 @@ export default {
       listQuery: Object.assign({}, defaultList),
       sortOptions: [{ label: '+创建时间', key: 'asc' }, { label: '-创建时间', key: 'desc' }],
       categoryOptions: [],
+      selectedOption: null,
       total: 0
     }
   },
   methods: {
+    initCategoryOptions(list) {
+      let options = []
+      list.map(v => {
+        let temp = {}
+        if (v.category_type.id === 1) {
+          temp.value = v.id
+          temp.label = v.name
+          temp.children = []
+          options.push(temp)
+        }
+      })
+      list.map(v => {
+        let temp = {}
+        if (v.category_type.id === 2) {
+          temp.value = v.id
+          temp.label = v.name
+          for (let i in options) {
+            if (v.parent_category.id === options[i].value) {
+              options[i].children.push(temp)
+            }
+          }
+        }
+      })
+      return options
+    },
     getCategoriesList() {
       getCategory().then(res => {
-        this.categoryOptions = res.data.list
-        this.categoryOptions.unshift({
-          id: 0,
-          name: '全部'
-        })
+        this.categoryOptions = this.initCategoryOptions(res.data.list)
         this.listLoading = false
       })
     },
@@ -110,12 +134,18 @@ export default {
         this.listLoading = false
       })
     },
+    handleCategoryFilter() {
+      console.log(this.selectedOption[1])
+      this.listQuery.category_id = this.selectedOption[1]
+      this.getProductsList()
+    },
     handleFilter() {
       this.listQuery.page = 1
       this.getProductsList()
     },
     handleReset() {
       this.listQuery = Object.assign({}, defaultList)
+      this.selectedOption = []
       this.getProductsList()
     },
     handleSizeChange(val) {

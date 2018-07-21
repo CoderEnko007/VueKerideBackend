@@ -2,7 +2,11 @@
   <div class="app-container">
     <div class="filter-container clearfix">
       <h2 style="float: left; margin-left: 20px" class="info"><i class="el-icon-menu"></i>  {{$route.meta.title}}</h2>
-      <el-button class="add-btn" @click="handleCreate" type="primary" icon="el-icon-edit">增加产品分类</el-button>
+      <div class="filter">
+        <el-cascader filterable expand-trigger="hover" :options="categoryOptions" v-model="selectedOption" @change="handleFilter">
+        </el-cascader>
+        <el-button @click="handleCreate" type="primary" icon="el-icon-edit">增加产品分类</el-button>
+      </div>
     </div>
 
     <el-table :data="list" v-loading="listLoading" element-loading-text="加载中..." border fit highlight-current-row>
@@ -21,9 +25,19 @@
           <span>{{scope.row.desc}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="120" align="center" label="分类级别">
+        <template slot-scope="scope">
+          <span>{{scope.row.category_type.text}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="120" align="center" label="父级分类">
+        <template slot-scope="scope">
+          <span>{{scope.row.parent_category.name}}</span>
+        </template>
+      </el-table-column>
       <el-table-column width="95" align="center" label="总数">
         <template slot-scope="scope">
-          <span>{{scope.row.nums}}</span>
+          <span v-show="scope.row.category_type.id === 2">{{scope.row.nums}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="操作">
@@ -35,12 +49,19 @@
     </el-table>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="data" label-position="left" label-width="70px" style='width: 800px; margin-left:50px;'>
-        <el-form-item label="类别名" prop="name">
-          <el-input v-model="data.name"></el-input>
+      <el-form :rules="rules" ref="dataForm" :model="categoryData" label-position="left" label-width="70px" style='width: 800px; margin-left:50px;'>
+        <el-form-item label-width="120px" label="类别名" prop="name">
+          <el-input v-model="categoryData.name"></el-input>
         </el-form-item>
-        <el-form-item label="描述信息">
-          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6}" placeholder="Please input" v-model="data.desc">
+        <el-form-item label-width="120px" label="父级类别名" class="postInfo-container-item">
+          <el-select clearable v-model="categoryData.parent_category.id" placeholder="请选择">
+            <el-option v-for="(item, index) in parentOptions" :key="index" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+          <span><strong><em>（若不选择父级类别则表示该新建类别为一级类别）</em></strong></span>
+        </el-form-item>
+        <el-form-item label-width="120px" label="描述信息">
+          <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6}" placeholder="Please input" v-model="categoryData.desc">
           </el-input>
         </el-form-item>
       </el-form>
@@ -54,19 +75,30 @@
 </template>
 <script>
 import {getCategory, createCategory, updateCategory, deleteCategory} from "../../api/keride";
-
+const defaultQuery = {
+  category_type: null,
+  parent_category: null
+}
 export default {
   data() {
     return {
       list: null,
       listLoading: true,
       // 对话框相关变量
-      data: {
+      categoryData: {
         id: undefined,
         name: '',
         desc: '',
+        parent_category: {
+          id: null,
+          name: null
+        },
         nums: undefined
       },
+      listQuery: Object.assign({}, defaultQuery),
+      parentOptions: [],
+      categoryOptions: [],
+      selectedOption: ['0'],
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -79,16 +111,39 @@ export default {
     }
   },
   methods: {
+    initCategoryOptions(list) {
+      let options = [
+        {value: '0', label: '全部分类'},
+        {value: '1', label: '一级分类'},
+        {value: '2', label: '二级分类', children: []}
+      ]
+      this.parentOptions = []
+      list.map(v => {
+        let temp = {}
+        if (v.category_type.id === 1) {
+          temp.value = v.id
+          temp.label = v.name
+          // temp.children = []
+          options[2].children.push(temp)
+          this.parentOptions.push(v)
+        }
+      })
+      return options
+    },
     getCategoriesList() {
-      getCategory().then(res => {
+      getCategory(this.listQuery).then(res => {
         this.list = res.data.list
+        if (this.listQuery.category_type !== "2") {
+          this.categoryOptions = this.initCategoryOptions(this.list)
+        }
         this.listLoading = false
       }).catch(err => {
         this.listLoading = false
       })
     },
     handleUpdate(row) {
-      this.data = Object.assign({}, row)
+      console.log('aaa',row)
+      this.categoryData = Object.assign({}, row)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -134,8 +189,9 @@ export default {
         if (valid) {
           this.listLoading = true
           createCategory({
-            name: this.data.name,
-            desc: this.data.desc
+            name: this.categoryData.name,
+            desc: this.categoryData.desc,
+            parent_category: this.categoryData.parent_category.id
           }).then(res => {
             // this.list.unshift(this.data)
             this.getCategoriesList()
@@ -163,9 +219,10 @@ export default {
         if (valid) {
           this.listLoading = true
           updateCategory({
-            id: this.data.id,
-            name: this.data.name,
-            desc: this.data.desc
+            id: this.categoryData.id,
+            name: this.categoryData.name,
+            desc: this.categoryData.desc,
+            parent_category: this.categoryData.parent_category.id
           }).then( res => {
             this.getCategoriesList()
             this.dialogFormVisible = false
@@ -188,13 +245,27 @@ export default {
       })
     },
     resetData() {
-      this.data = {
+      this.categoryData = {
         id: undefined,
         name: '',
         desc: '',
+        parent_category: {
+          id: null,
+          name: null
+        },
         nums: undefined
       }
     },
+    handleFilter() {
+      // "0" 代表全部分类，不做条件过滤
+      if (this.selectedOption[0] === "0") {
+        this.listQuery = Object.assign({}, defaultQuery)
+      } else {
+        this.listQuery.category_type = this.selectedOption[0] // 表示分类的级别，一级或者二级分类
+        this.listQuery.parent_category = this.selectedOption[1]?this.selectedOption[1]:null //selectedOption[1]表示父级分类,若为null则为一级分类
+      }
+      this.getCategoriesList()
+    }
   },
   mounted() {
     this.getCategoriesList()
@@ -209,7 +280,7 @@ export default {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    .add-btn {
+    .filter {
       position: absolute;
       right: 20px;
       top: 50%;
