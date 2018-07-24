@@ -4,7 +4,7 @@
       <span style="float: left; margin-left: 20px" class="info"><i class="el-icon-menu"></i>  {{$route.meta.title}}</span>
       <el-button class="el-button--primary" @click="submitForm" v-loading="loading">发 布</el-button>
     </sticky>
-    <el-form class="editor-content" :model="postForm" :rules="rules" ref="postForm">
+    <el-form class="editor-content" label-position="left" :model="postForm" :rules="rules" ref="postForm">
       <div class="createPost-main-container">
         <el-row>
           <el-col :span="21">

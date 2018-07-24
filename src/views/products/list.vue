@@ -69,7 +69,7 @@ const defaultList = {
   pageSize: 10,
   name: undefined,
   category_id: undefined,
-  sort: 'desc'
+  sort: 'asc'
 }
 export default {
   data() {

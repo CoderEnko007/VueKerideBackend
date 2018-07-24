@@ -95,6 +95,7 @@ export default {
         },
         nums: undefined
       },
+      originCategoryData: {},
       listQuery: Object.assign({}, defaultQuery),
       parentOptions: [],
       categoryOptions: [],
@@ -142,8 +143,8 @@ export default {
       })
     },
     handleUpdate(row) {
-      console.log('aaa',row)
       this.categoryData = Object.assign({}, row)
+      this.originCategoryData = JSON.parse(JSON.stringify(this.categoryData));
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -217,6 +218,15 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          if ((!this.originCategoryData.parent_category.id && this.categoryData.parent_category.id)
+          || this.originCategoryData.parent_category.id && !this.categoryData.parent_category.id) {
+            this.$message({
+              message: "不能从一类级别变更为二类级别，反之亦然",
+              type: 'error',
+              duration: 5 * 1000
+            })
+            return
+          }
           this.listLoading = true
           updateCategory({
             id: this.categoryData.id,

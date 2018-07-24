@@ -4,7 +4,7 @@
     <span style="float: left; margin-left: 20px" class="info"><i class="el-icon-menu"></i>  {{$route.meta.title}}</span>
     <el-button class="el-button--primary" @click="submitForm" v-loading="loading">发 布</el-button>
   </sticky>
-  <el-form class="editor-content" :model="postForm" :rules="rules" ref="postForm">
+  <el-form class="editor-content" label-position="left" :model="postForm" :rules="rules" ref="postForm">
     <div class="createPost-main-container">
       <el-row>
         <el-col :span="21">
@@ -15,7 +15,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label-width="80px" label="产品分类:" class="postInfo-container-item">
+          <el-form-item prop="category" label-width="120px" label="产品分类:" class="postInfo-container-item">
             <!--<el-select clearable v-model="postForm.category_id" placeholder="产品类别">-->
               <!--<el-option v-for="item in categoryOptions" :key="item.id" :label="item.name" :value="item.id">-->
               <!--</el-option>-->
@@ -25,7 +25,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="21">
-          <el-form-item label-width="80px" class="uploader clearfix" label="封面图:" prop="image">
+          <el-form-item label-width="120px" class="uploader clearfix" label="封面图:" prop="image">
             <el-upload
               class="image-uploader"
               :action= domain
@@ -46,7 +46,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item prop="content">
+      <el-form-item prop="desc">
         <tinymce :height="600" v-model="postForm.desc"></tinymce>
       </el-form-item>
     </div>
@@ -79,23 +79,21 @@ export default {
     }
   },
   data() {
-    const validateRequire = (rule, value, callback) => {
-      if (value === '') {
-        this.$message({
-          message: rule.field + '为必传项',
-          type: 'error'
-        })
-        callback()
+    const validateCategory = (rule, value, callback) => {
+      if (!this.selectedOption) {
+        callback(new Error('请选择分类'));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     return {
       postForm: Object.assign({}, defaultForm),
       domain: config.domain,
       rules: {
-        name: [{ required: true, message: '该字段不能为空' }],
-        desc: [{ required: true, message: '该字段不能为空' }]
+        name: [{ required: true, message: '请填写标题' }],
+        desc: [{ required: true, message: '请填写内容', trigger: 'blur' }],
+        category: [{ required: true, validator: validateCategory }],
+        image: [{ required: true, message: '请添加图片' }],
       },
       loading: false,
       imageLoading: false,
