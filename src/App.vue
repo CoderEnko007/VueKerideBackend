@@ -21,4 +21,7 @@ export default {
   color: #303133;
   font-size: 22px;
 }
+.el-dialog {
+  min-width: 770px;
+}
 </style>

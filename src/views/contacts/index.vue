@@ -35,7 +35,7 @@
     </el-table>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="postForm" label-position="left" label-width="90px" style='width: 800px; margin-left:50px;'>
+      <el-form :rules="rules" ref="dataForm" :model="postForm" label-position="left" label-width="90px" style='max-width: 800px; margin-left:50px; margin-right: 50px;'>
         <el-form-item label="名称" prop="name">
           <el-input v-model="postForm.name"></el-input>
         </el-form-item>

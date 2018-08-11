@@ -49,18 +49,18 @@
     </el-table>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="categoryData" label-position="left" label-width="70px" style='width: 800px; margin-left:50px;'>
-        <el-form-item label-width="120px" label="类别名" prop="name">
+      <el-form :rules="rules" ref="dataForm" :model="categoryData" label-position="left" label-width="70px" style='max-width: 800px; margin-left:50px; margin-right: 50px;'>
+        <el-form-item label-width="100px" label="类别名" prop="name">
           <el-input v-model="categoryData.name"></el-input>
         </el-form-item>
-        <el-form-item label-width="120px" label="父级类别名" class="postInfo-container-item">
+        <el-form-item label-width="100px" label="父级类别名" class="postInfo-container-item">
           <el-select clearable v-model="categoryData.parent_category.id" placeholder="请选择">
             <el-option v-for="(item, index) in parentOptions" :key="index" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
           <span><strong><em>（若不选择父级类别则表示该新建类别为一级类别）</em></strong></span>
         </el-form-item>
-        <el-form-item label-width="120px" label="描述信息">
+        <el-form-item label-width="100px" label="描述信息">
           <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6}" placeholder="Please input" v-model="categoryData.desc">
           </el-input>
         </el-form-item>

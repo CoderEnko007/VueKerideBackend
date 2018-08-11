@@ -88,4 +88,16 @@ export function resizeImage(file, opts) {
   return lrz(file, {width: config.width, height: config.height, quality: config.quality, filename: config.filename})
 }
 
+export function strDisCode(str) {
+  str = str.replace(/&nbsp;/g,'\xa0')
+  str = str.replace(/&Uuml;/g, '\xdc')
+  str = str.replace(/&uuml;/g, '\xfc')
+  str = str.replace(/&Ouml;/g, '\xd6')
+  str = str.replace(/&ouml;/g, '\xf6')
+  str = str.replace(/&Aring;/g, '\xc5')
+  str = str.replace(/&aring;/g, '\xe6')
+
+  return str
+}
+
 // export const resizeImage

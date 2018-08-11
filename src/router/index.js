@@ -83,7 +83,7 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/news/list',
     name: 'news',
-    meta: { title: '新闻动态', icon: 'news'},
+    meta: { title: '信息资讯', icon: 'news'},
     children: [
       { path: 'list', name: 'newsList', component: () => import('@/views/news/list'), meta: { title: '新闻列表', icon: 'list' }},
       { path: 'create', name: 'addNews', component: () => import('@/views/news/create'), meta: { title: '添加新闻', icon: 'create' } },

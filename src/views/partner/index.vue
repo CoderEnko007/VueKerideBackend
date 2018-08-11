@@ -16,6 +16,11 @@
           <span class="link-type" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="200" align="center" label="类别">
+        <template slot-scope="scope">
+          <span>{{scope.row.type.text}}</span>
+        </template>
+      </el-table-column>
       <el-table-column min-width="150" align="left" label="图片">
         <template slot-scope="scope">
           <span>{{scope.row.image}}</span>
@@ -36,9 +41,13 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="postForm" label-position="left" label-width="70px" style='width: 800px; margin-left:50px;'>
-        <el-form-item label="合作伙伴" prop="name">
+      <el-form :rules="rules" ref="dataForm" :model="postForm" label-position="left" label-width="70px" style='max-width: 800px; margin-left:50px; margin-right: 50px;'>
+        <el-form-item label="名称" prop="name">
           <el-input v-model="postForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="类型" prop="name">
+          <el-radio v-model="postForm.type" :label=PARTNER_STYLE[0].key>{{PARTNER_STYLE[0].text}}</el-radio>
+          <el-radio v-model="postForm.type" :label=PARTNER_STYLE[1].key>{{PARTNER_STYLE[1].text}}</el-radio>
         </el-form-item>
         <el-form-item label="图片" class="uploader clearfix" prop="image">
           <el-upload
@@ -76,7 +85,8 @@ import {resizeImage} from "../../utils";
 const defaultData = {
   id: undefined,
   name: '',
-  image: ''
+  image: '',
+  type: 1
 }
 export default {
   data() {
@@ -91,6 +101,10 @@ export default {
         create: '新建'
       },
       postForm: Object.assign({}, defaultData),
+      PARTNER_STYLE: [
+        {key: 1, text: '代理品牌'},
+        {key: 2, text: '工业客户'}
+      ],
       domain: config.domain,
       rules: {
         image: [{ required: true, message: '请添加图片' }]
@@ -112,6 +126,7 @@ export default {
         this.list = res.data
         this.total = res.data.length
         this.pageList = this.initListByPage(this.list)
+        console.log('aaa', this.pageList)
         this.listLoading = false
       }).catch(err => {
         this.listLoading = false
@@ -129,7 +144,8 @@ export default {
       this.postForm = Object.assign({}, {
         id: row.id,
         name: row.name,
-        image: row.image
+        image: row.image,
+        type: row.type.key
       })
       this.dialogStatus = 'update'
       this.dialogFormVisible = true

@@ -62,7 +62,8 @@
   </div>
 </template>
 <script>
-import { getCategory, getProducts, deleteProduct } from "../../api/keride";
+import { getCategory, getProducts, deleteProduct } from "@/api/keride";
+import {strDisCode} from "@/utils";
 
 const defaultList = {
   page: 1,
@@ -128,7 +129,8 @@ export default {
             let desc = this.productsList[index].desc.replace(/<[^>]*>|/g,""); //去除HTML tag
             desc = desc.replace(/[ | ]*\n/g,'\n'); //去除行尾空白
             desc = desc.replace(/&nbsp;/ig,'');//去掉&nbsp;
-            this.productsList[index].desc = desc.replace(/\s/g,''); //将空格去掉
+            desc = desc.replace(/\s/g,''); //将空格去掉
+            this.productsList[index].desc = strDisCode(desc)
           }
         }
         this.listLoading = false

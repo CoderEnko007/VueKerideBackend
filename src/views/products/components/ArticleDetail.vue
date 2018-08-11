@@ -58,8 +58,8 @@ import Tinymce from '@/components/Tinymce'
 import Sticky from '@/components/Sticky'
 import MDinput from '@/components/MDinput'
 import { config, getToken, upload } from '@/api/qiniu'
-import { getCategory, createProduct, getProductDetail, updateProduct} from "../../../api/keride";
-import {resizeImage} from "../../../utils";
+import { getCategory, createProduct, getProductDetail, updateProduct} from "@/api/keride";
+import {resizeImage} from "@/utils";
 
 const defaultForm = {
   status: 'draft',
@@ -224,12 +224,10 @@ export default {
       getProductDetail(id).then(res => {
         this.postForm = res.data
         this.postForm.status = defaultForm.status
-        console.log('aaa', this.categoryOptions, res.data.category_id)
         for (let i in this.categoryOptions) {
           for (let j in this.categoryOptions[i].children) {
             if (res.data.category_id === this.categoryOptions[i].children[j].value) {
               this.selectedOption = [this.categoryOptions[i].value, this.categoryOptions[i].children[j].value]
-              console.log('bbb', this.selectedOption)
             }
           }
         }
@@ -237,7 +235,6 @@ export default {
     },
     handleFilter() {
       this.postForm.category_id = this.selectedOption[1]
-      console.log(this.selectedOption)
     }
   },
   mounted() {
